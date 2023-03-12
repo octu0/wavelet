@@ -13,7 +13,7 @@ import (
 	"github.com/octu0/wavelet"
 )
 
-func TestWavelet(t *testing.T) {
+func main(t *testing.T) {
 	high, low := Wavelet([]float64{1.0, 2.0, 3.0, 4.0, 5.0, 8.0})
 	println(high) // => [2.12.., 4.94.., 9.19]
 	println(low)  // => [-0.707.., -0.707.., -2.12..]
