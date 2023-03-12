@@ -8,9 +8,9 @@ type Float interface {
 	float32 | float64
 }
 
-func Wavelet[T Float](signal []T) ([]T, []T) {
+func Wavelet[T Float](signal []T) (high, low []T) {
 	N := len(signal)
-	high, low := make([]T, N/2), make([]T, N/2)
+	high, low = make([]T, N/2), make([]T, N/2)
 
 	for i := 0; i < N/2; i += 1 {
 		high[i] = (signal[2*i] + signal[2*i+1]) / math.Sqrt2
@@ -25,6 +25,20 @@ func WaveletClamp[T Float](signal []T, min, max T) ([]T, []T) {
 		high[i] = Clamp(v, min, max)
 	}
 	return high, low
+}
+
+func Compare[T Float](a, b []T) (low []T) {
+	N := len(a)
+	low = make([]T, N/2)
+
+	for i := 0; i < N/2; i += 1 {
+		d := (a[2*i] - b[2*i+1]) / 2
+		if 0 < d {
+			d = 0
+		}
+		low[i] = d
+	}
+	return low
 }
 
 func Inverse[T Float](high, low []T) []T {

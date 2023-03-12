@@ -68,3 +68,26 @@ func TestWavelet(t *testing.T) {
 		tt.Logf("out=%v", out)
 	})
 }
+
+func TestCompare(t *testing.T) {
+	out := Compare(
+		[]float64{1, 1, 1, 0, 1, 1, 2, 2, 2, 0},
+		[]float64{1, 1, 1, 8, 1, 1, 2, 2, 2, 0},
+	)
+	t.Logf("compare=%v", out)
+	if out[0] != 0 {
+		t.Errorf("no diff")
+	}
+	if out[1] == 0 {
+		t.Errorf("no diff")
+	}
+	if out[2] != 0 {
+		t.Errorf("no diff")
+	}
+	if out[3] != 0 {
+		t.Errorf("has diff")
+	}
+	if out[4] != 0 {
+		t.Errorf("no diff")
+	}
+}
