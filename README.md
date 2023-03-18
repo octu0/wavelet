@@ -34,15 +34,17 @@ An example of converting an image to an intermediate format is implemented in [_
 
 source image 
 
-| original      |                                    |
-| :-----------: | :--------------------------------: |
-| source        | ![img](_example/src.png)           |
-| intermediate  | ![img](_example/intermediate.png)  |
-| compress 55%  | ![img](_example/compress_0.55.png) |
-| compress 75%  | ![img](_example/compress_0.75.png) |
-| compress 85%  | ![img](_example/compress_0.85.png) |
-| compress 95%  | ![img](_example/compress_0.95.png) |
-| inverse       | ![img](_example/inverse.png)       |
+| original      |                                     |
+| :-----------: | :---------------------------------: |
+| source        | ![img](_example/src.png)            |
+| intermediate  | ![img](_example/intermediate.png)   |
+| substract 55% | ![img](_example/substract_0.55.png) |
+| substract 75% | ![img](_example/substract_0.75.png) |
+| substract 85% | ![img](_example/substract_0.85.png) |
+| substract 95% | ![img](_example/substract_0.95.png) |
+| inverse       | ![img](_example/inverse.png)        |
+| runlength-enc | 104KB                               |
+| runlength-dec | ![img](_example/decoded.png)        |
 
 # License
 
