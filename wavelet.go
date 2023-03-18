@@ -8,7 +8,7 @@ type Float interface {
 	float32 | float64
 }
 
-func Wavelet[T Float](signal []T) (high, low []T) {
+func Haar[T Float](signal []T) (high, low []T) {
 	N := len(signal)
 	high, low = make([]T, N/2), make([]T, N/2)
 
@@ -19,12 +19,37 @@ func Wavelet[T Float](signal []T) (high, low []T) {
 	return high, low
 }
 
-func WaveletClamp[T Float](signal []T, min, max T) ([]T, []T) {
-	high, low := Wavelet(signal)
-	for i, v := range high {
-		high[i] = Clamp(v, min, max)
+func InverseHaar[T Float](high, low []T) []T {
+	N := len(high) * 2
+	out := make([]T, N)
+
+	for i := 0; i < N/2; i += 1 {
+		out[2*i] = (high[i] + low[i]) / math.Sqrt2
+		out[2*i+1] = (high[i] - low[i]) / math.Sqrt2
 	}
-	return high, low
+	return out
+}
+
+func Threshold[T Float](signal []T, ratio T) {
+	min, max := 0*ratio, 0*ratio
+	for i := 0; i < len(signal); i += 1 {
+		if signal[i] < min {
+			min = signal[i]
+		}
+		if max < signal[i] {
+			max = signal[i]
+		}
+	}
+
+	thMin, thMax := (min * ratio), (max * ratio)
+	for i := 0; i < len(signal); i += 1 {
+		if signal[i] < thMin {
+			signal[i] = thMin
+		}
+		if thMax < signal[i] {
+			signal[i] = thMax
+		}
+	}
 }
 
 func Compare[T Float](a, b []T) (low []T) {
@@ -39,17 +64,6 @@ func Compare[T Float](a, b []T) (low []T) {
 		low[i] = d
 	}
 	return low
-}
-
-func Inverse[T Float](high, low []T) []T {
-	N := len(high) * 2
-	out := make([]T, N)
-
-	for i := 0; i < N/2; i += 1 {
-		out[2*i] = (high[i] + low[i]) / math.Sqrt2
-		out[2*i+1] = (high[i] - low[i]) / math.Sqrt2
-	}
-	return out
 }
 
 func Clamp[T Float](data, min, max T) T {

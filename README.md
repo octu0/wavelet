@@ -14,11 +14,11 @@ import (
 )
 
 func main() {
-	high, low := wavelet.Wavelet([]float64{1.0, 2.0, 3.0, 4.0, 5.0, 8.0})
+	high, low := wavelet.Haar([]float64{1.0, 2.0, 3.0, 4.0, 5.0, 8.0})
 	println(high) // => [2.12.., 4.94.., 9.19]
 	println(low)  // => [-0.707.., -0.707.., -2.12..]
 
-	out := wavelet.Inverse(high, low)
+	out := wavelet.InverseHaar(high, low)
 	println(out)  // => [0.999, 1.999, 3.000, 3.999, 5.000, 7.999]
 
 	for i, v := range out {
@@ -34,11 +34,15 @@ An example of converting an image to an intermediate format is implemented in [_
 
 source image 
 
-| original      |                                       |
-| :-----------: | :-----------------------------------: |
-| source        | ![cropped](_example/src.png)          |
-| intermediate  | ![cropped](_example/intermediate.png) |
-| inverse       | ![inverse](_example/inverse.png)      |
+| original      |                                    |
+| :-----------: | :--------------------------------: |
+| source        | ![img](_example/src.png)           |
+| intermediate  | ![img](_example/intermediate.png)  |
+| compress 55%  | ![img](_example/compress_0.55.png) |
+| compress 75%  | ![img](_example/compress_0.75.png) |
+| compress 85%  | ![img](_example/compress_0.85.png) |
+| compress 95%  | ![img](_example/compress_0.95.png) |
+| inverse       | ![img](_example/inverse.png)       |
 
 # License
 
