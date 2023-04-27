@@ -10,22 +10,22 @@ type Float interface {
 
 func Haar[T Float](signal []T) (high, low []T) {
 	N := len(signal)
-	high, low = make([]T, N/2), make([]T, N/2)
+	low, high = make([]T, N/2), make([]T, N/2)
 
 	for i := 0; i < N/2; i += 1 {
-		high[i] = (signal[2*i] + signal[2*i+1]) / math.Sqrt2
-		low[i] = (signal[2*i] - signal[2*i+1]) / math.Sqrt2
+		low[i] = (signal[2*i] + signal[2*i+1]) / math.Sqrt2
+		high[i] = (signal[2*i] - signal[2*i+1]) / math.Sqrt2
 	}
-	return high, low
+	return low, high
 }
 
-func InverseHaar[T Float](high, low []T) []T {
+func InverseHaar[T Float](low, high []T) []T {
 	N := len(high) * 2
 	out := make([]T, N)
 
 	for i := 0; i < N/2; i += 1 {
-		out[2*i] = (high[i] + low[i]) / math.Sqrt2
-		out[2*i+1] = (high[i] - low[i]) / math.Sqrt2
+		out[2*i] = (low[i] + high[i]) / math.Sqrt2
+		out[2*i+1] = (low[i] - high[i]) / math.Sqrt2
 	}
 	return out
 }
@@ -52,18 +52,18 @@ func Threshold[T Float](signal []T, ratio T) {
 	}
 }
 
-func Compare[T Float](a, b []T) (low []T) {
+func Compare[T Float](a, b []T) (high []T) {
 	N := len(a)
-	low = make([]T, N/2)
+	high = make([]T, N/2)
 
 	for i := 0; i < N/2; i += 1 {
 		d := (a[2*i] - b[2*i+1]) / 2
 		if 0 < d {
 			d = 0
 		}
-		low[i] = d
+		high[i] = d
 	}
-	return low
+	return high
 }
 
 func Clamp[T Float](data, min, max T) T {

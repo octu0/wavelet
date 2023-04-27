@@ -34,14 +34,14 @@ func init() {
 func main() {
 	width, height := testImg.Rect.Dx(), testImg.Rect.Dy()
 
-	highXR := make([][]float32, height)
-	highXG := make([][]float32, height)
-	highXB := make([][]float32, height)
-	highXA := make([][]float32, height)
 	lowXR := make([][]float32, height)
 	lowXG := make([][]float32, height)
 	lowXB := make([][]float32, height)
 	lowXA := make([][]float32, height)
+	highXR := make([][]float32, height)
+	highXG := make([][]float32, height)
+	highXB := make([][]float32, height)
+	highXA := make([][]float32, height)
 
 	for h := 0; h < height; h += 1 {
 		r, g, b, a := make([]float32, width), make([]float32, width), make([]float32, width), make([]float32, width)
@@ -52,20 +52,20 @@ func main() {
 			b[w] = float32(c.B)
 			a[w] = float32(c.A)
 		}
-		highXR[h], lowXR[h] = wavelet.Haar(r)
-		highXG[h], lowXG[h] = wavelet.Haar(g)
-		highXB[h], lowXB[h] = wavelet.Haar(b)
-		highXA[h], lowXA[h] = wavelet.Haar(a)
+		lowXR[h], highXR[h] = wavelet.Haar(r)
+		lowXG[h], highXG[h] = wavelet.Haar(g)
+		lowXB[h], highXB[h] = wavelet.Haar(b)
+		lowXA[h], highXA[h] = wavelet.Haar(a)
 	}
 
-	highYR := make([][]float32, width)
-	highYG := make([][]float32, width)
-	highYB := make([][]float32, width)
-	highYA := make([][]float32, width)
 	lowYR := make([][]float32, width)
 	lowYG := make([][]float32, width)
 	lowYB := make([][]float32, width)
 	lowYA := make([][]float32, width)
+	highYR := make([][]float32, width)
+	highYG := make([][]float32, width)
+	highYB := make([][]float32, width)
+	highYA := make([][]float32, width)
 
 	for w := 0; w < width; w += 1 {
 		r, g, b, a := make([]float32, height), make([]float32, height), make([]float32, height), make([]float32, height)
@@ -76,20 +76,20 @@ func main() {
 			b[h] = float32(c.B)
 			a[h] = float32(c.A)
 		}
-		highYR[w], lowYR[w] = wavelet.Haar(r)
-		highYG[w], lowYG[w] = wavelet.Haar(g)
-		highYB[w], lowYB[w] = wavelet.Haar(b)
-		highYA[w], lowYA[w] = wavelet.Haar(a)
+		lowYR[w], highYR[w] = wavelet.Haar(r)
+		lowYG[w], highYG[w] = wavelet.Haar(g)
+		lowYB[w], highYB[w] = wavelet.Haar(b)
+		lowYA[w], highYA[w] = wavelet.Haar(a)
 	}
 
 	intermidate := image.NewRGBA(image.Rect(0, 0, width/2, height/2))
 
 	for h := 0; h < (height / 2); h += 1 {
 		for w := 0; w < (width / 2); w += 1 {
-			r := byte(wavelet.Clamp((highYR[w*2][h]+highXR[h*2][w])/2, 0, 255))
-			g := byte(wavelet.Clamp((highYG[w*2][h]+highXG[h*2][w])/2, 0, 255))
-			b := byte(wavelet.Clamp((highYB[w*2][h]+highXB[h*2][w])/2, 0, 255))
-			a := byte(wavelet.Clamp((highYA[w*2][h]+highXA[h*2][w])/2, 0, 255))
+			r := byte(wavelet.Clamp((lowYR[w*2][h]+lowXR[h*2][w])/2, 0, 255))
+			g := byte(wavelet.Clamp((lowYG[w*2][h]+lowXG[h*2][w])/2, 0, 255))
+			b := byte(wavelet.Clamp((lowYB[w*2][h]+lowXB[h*2][w])/2, 0, 255))
+			a := byte(wavelet.Clamp((lowYA[w*2][h]+lowXA[h*2][w])/2, 0, 255))
 			intermidate.SetRGBA(w, h, color.RGBA{
 				R: r,
 				G: g,
@@ -107,15 +107,15 @@ func main() {
 
 	inverse := image.NewRGBA(image.Rect(0, 0, width, height))
 	for w := 0; w < width; w += 1 {
-		yr := wavelet.InverseHaar(highYR[w], lowYR[w])
-		yg := wavelet.InverseHaar(highYG[w], lowYG[w])
-		yb := wavelet.InverseHaar(highYB[w], lowYB[w])
-		ya := wavelet.InverseHaar(highYA[w], lowYA[w])
+		yr := wavelet.InverseHaar(lowYR[w], highYR[w])
+		yg := wavelet.InverseHaar(lowYG[w], highYG[w])
+		yb := wavelet.InverseHaar(lowYB[w], highYB[w])
+		ya := wavelet.InverseHaar(lowYA[w], highYA[w])
 		for h := 0; h < height; h += 1 {
-			xr := wavelet.InverseHaar(highXR[h], lowXR[h])
-			xg := wavelet.InverseHaar(highXG[h], lowXG[h])
-			xb := wavelet.InverseHaar(highXB[h], lowXB[h])
-			xa := wavelet.InverseHaar(highXA[h], lowXA[h])
+			xr := wavelet.InverseHaar(lowXR[h], highXR[h])
+			xg := wavelet.InverseHaar(lowXG[h], highXG[h])
+			xb := wavelet.InverseHaar(lowXB[h], highXB[h])
+			xa := wavelet.InverseHaar(lowXA[h], highXA[h])
 
 			inverse.SetRGBA(w, h, color.RGBA{
 				R: byte((yr[h] + xr[w]) / 2),
@@ -136,25 +136,25 @@ func main() {
 	substract := image.NewRGBA(image.Rect(0, 0, width, height))
 
 	for h := 0; h < height; h += 1 {
-		wavelet.Threshold(highXR[h], ratio)
-		wavelet.Threshold(highXG[h], ratio)
-		wavelet.Threshold(highXB[h], ratio)
+		wavelet.Threshold(lowXR[h], ratio)
+		wavelet.Threshold(lowXG[h], ratio)
+		wavelet.Threshold(lowXB[h], ratio)
 	}
 	for w := 0; w < width; w += 1 {
-		wavelet.Threshold(highYR[w], ratio)
-		wavelet.Threshold(highYG[w], ratio)
-		wavelet.Threshold(highYB[w], ratio)
+		wavelet.Threshold(lowYR[w], ratio)
+		wavelet.Threshold(lowYG[w], ratio)
+		wavelet.Threshold(lowYB[w], ratio)
 	}
 	for w := 0; w < width; w += 1 {
-		yr := wavelet.InverseHaar(highYR[w], lowYR[w])
-		yg := wavelet.InverseHaar(highYG[w], lowYG[w])
-		yb := wavelet.InverseHaar(highYB[w], lowYB[w])
-		ya := wavelet.InverseHaar(highYA[w], lowYA[w])
+		yr := wavelet.InverseHaar(lowYR[w], highYR[w])
+		yg := wavelet.InverseHaar(lowYG[w], highYG[w])
+		yb := wavelet.InverseHaar(lowYB[w], highYB[w])
+		ya := wavelet.InverseHaar(lowYA[w], highYA[w])
 		for h := 0; h < height; h += 1 {
-			xr := wavelet.InverseHaar(highXR[h], lowXR[h])
-			xg := wavelet.InverseHaar(highXG[h], lowXG[h])
-			xb := wavelet.InverseHaar(highXB[h], lowXB[h])
-			xa := wavelet.InverseHaar(highXA[h], lowXA[h])
+			xr := wavelet.InverseHaar(lowXR[h], highXR[h])
+			xg := wavelet.InverseHaar(lowXG[h], highXG[h])
+			xb := wavelet.InverseHaar(lowXB[h], highXB[h])
+			xa := wavelet.InverseHaar(lowXA[h], highXA[h])
 
 			substract.SetRGBA(w, h, color.RGBA{
 				R: byte(wavelet.Clamp((yr[h]+xr[w])/2, 0, 255)),
@@ -178,10 +178,10 @@ func main() {
 	i := 0
 	for h := 0; h < (height / 2); h += 1 {
 		for w := 0; w < (width / 2); w += 1 {
-			r := byte(wavelet.Clamp((highYR[w*2][h]+highXR[h*2][w])/2, 0, 255))
-			g := byte(wavelet.Clamp((highYG[w*2][h]+highXG[h*2][w])/2, 0, 255))
-			b := byte(wavelet.Clamp((highYB[w*2][h]+highXB[h*2][w])/2, 0, 255))
-			a := byte(wavelet.Clamp((highYA[w*2][h]+highXA[h*2][w])/2, 0, 255))
+			r := byte(wavelet.Clamp((lowYR[w*2][h]+lowXR[h*2][w])/2, 0, 255))
+			g := byte(wavelet.Clamp((lowYG[w*2][h]+lowXG[h*2][w])/2, 0, 255))
+			b := byte(wavelet.Clamp((lowYB[w*2][h]+lowXB[h*2][w])/2, 0, 255))
+			a := byte(wavelet.Clamp((lowYA[w*2][h]+lowXA[h*2][w])/2, 0, 255))
 			dataR[i] = r
 			dataG[i] = g
 			dataB[i] = b
