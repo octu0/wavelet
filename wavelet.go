@@ -8,7 +8,7 @@ type Float interface {
 	float32 | float64
 }
 
-func Haar[T Float](signal []T) (high, low []T) {
+func Haar[T Float](signal []T) (low, high []T) {
 	N := len(signal)
 	low, high = make([]T, N/2), make([]T, N/2)
 
